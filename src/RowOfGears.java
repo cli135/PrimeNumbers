@@ -12,6 +12,7 @@ public class RowOfGears {
         // everybody is cool with that, shall wel?
 
         // now failing only case 10
+        // update: case 10 solved
 
         // alternating sum of pegs array
         // when a first radius is picked,
