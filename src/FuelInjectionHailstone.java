@@ -1,37 +1,25 @@
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FuelInjectionHailstone {
     public static int solution(String x) {
-        // don't go above the next highest power of two
-        int a = Integer.parseInt(x);
-        int nextHighestPowerOfTwo = Math.pow(2, Math.floor(Math.log(a) / Math.log(2)) + )
+        BigInteger a = new BigInteger(x);
+        return helper(a);
+        // dynamic programming through recursion
+
     }
-    public static int helper(String x) {
-        int a = Integer.parseInt(x);
+    public static int helper(BigInteger x) {
+        BigInteger a = x;
         // base case
-        if (a == 1) {
+        if (a.equals(BigInteger.valueOf(1))) {
             return 0;
         }
-        if (isPowerOfTwo(a)) {
-            return (int) Math.log(a);
+        // recursive case
+        if (a.mod(BigInteger.valueOf(2)).equals(BigInteger.valueOf(0))) {
+            return 1 + helper(a.divide(BigInteger.valueOf(2)));
         }
-        // recursive case: compare all 3 possible routes
-        // choose the minimum
-        List<Integer> possibleNext = new ArrayList<>();
-        if (a % 2 == 0) {
-            possibleNext.add(solution("" + (a / 2)));
-        }
-        possibleNext.add(solution("" + (a - 1)));
-        possibleNext.add(solution("" + (a + 1)));
-
-        int min = Integer.MAX_VALUE;
-        for (int i : possibleNext) {
-            if (i < min) {
-                min = i;
-            }
-        }
-        return 1 + min;
+        return 1 + Math.min(helper(a.subtract(BigInteger.valueOf(1))), helper(a.add(BigInteger.valueOf(1))));
     }
     public static boolean isPowerOfTwo(int n) {
         while (n > 1) {
@@ -46,6 +34,8 @@ public class FuelInjectionHailstone {
     public static void main(String[] args) {
         System.out.println(FuelInjectionHailstone.solution("4"));
         System.out.println(FuelInjectionHailstone.solution("15"));
+        System.out.println(FuelInjectionHailstone.solution("153453"));
+
     }
 
     public static int solution1(String x) {
