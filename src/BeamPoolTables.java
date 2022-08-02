@@ -7,6 +7,14 @@ import java.util.Collections;
 
 public class BeamPoolTables {
 
+    // 8-2-2022 6:50pm
+    // not passing tests 5 and 9 at the moment
+    // potential reasons:
+    // time limit exceeded
+    // finish out the change from (1, 1) to (0, 0)
+    // roundoff error in double equivalence class
+        // could shift to using a custom fraction class
+        // with integer numerator and denominator
     // This problem is a lot like
     // pool table questions,
     // geometric optics / light reflection questions
@@ -32,6 +40,9 @@ public class BeamPoolTables {
 
     public static int solution(int[] dimensions, int[] your_position, int[] trainer_position, int distance) {
 
+        // (0, 0) is the true corner, not (1, 1)
+        // just found that out
+
         // initializing variables
         int xDim = dimensions[0];
         int yDim = dimensions[1];
@@ -53,13 +64,11 @@ public class BeamPoolTables {
         bearings.add(curTrainerPosition);
 
 
-        // i think the -1 here is good since it offset
-        // for the center at (1, 1)
-        // regardless of player (your) position
-        int[] xParityForTrainer = {2 * (xDim - xTrainer), 2 * (xTrainer - 1)};
-        int[] xParityForPlayer = {2 * (xDim - xPlayer), 2 * (xPlayer - 1)};
-        int[] yParityForTrainer = {2 * (yDim - yTrainer), 2 * (yTrainer - 1)};
-        int[] yParityForPlayer = {2 * (yDim - yPlayer), 2 * (yPlayer - 1)};
+        // the wall here is at (0, 0) so we reflect off the wall like this
+        int[] xParityForTrainer = {2 * (xDim - xTrainer), 2 * (xTrainer)};
+        int[] xParityForPlayer = {2 * (xDim - xPlayer), 2 * (xPlayer)};
+        int[] yParityForTrainer = {2 * (yDim - yTrainer), 2 * (yTrainer)};
+        int[] yParityForPlayer = {2 * (yDim - yPlayer), 2 * (yPlayer)};
 
         // reflect board continuously to the right
         reflectBoardRecursively(distance, bearings, xParityForTrainer, yParityForTrainer, curTrainerPosition, "right", false);
@@ -121,6 +130,7 @@ public class BeamPoolTables {
         }
 
         // remove any (0, 0, x) bearings
+
         // going in reverse when we remove from an ArrayList
         // so we don't mess up our traversal
         // (only rightward elements are shifted over toward the left,
@@ -213,12 +223,13 @@ public class BeamPoolTables {
                 // count added since we can't reach anything
                 // behind it
 
-                if (closestPosition[0] == -1 && your_position[0] == 1) {
-                    continue; // can't go straight left
-                }
-                if (closestPosition[1] == -1 && your_position[1] == 1) {
-                    continue; // can't go straight down
-                }
+
+//                if (closestPosition[0] == -1 && your_position[0] == 1) {
+//                    continue; // can't go straight left
+//                }
+//                if (closestPosition[1] == -1 && your_position[1] == 1) {
+//                    continue; // can't go straight down
+//                }
 
                 count++;
                 // tell us what was added
@@ -256,7 +267,7 @@ public class BeamPoolTables {
             //System.out.println("error: shouldn't have gotten here");
             toggle = curTrainerPosition.length; // IndexOutOfBoundsException
         }
-        while (totalDistanceOut <= distance) {
+        while (totalDistanceOut <= 2 * distance) {
             // reflect the cur position
             // just a template that will change based on if-elseif-else statements below
             int[] reflected = {curTrainerPosition[0] - xParityForTrainer[toggle], curTrainerPosition[1], 1};
