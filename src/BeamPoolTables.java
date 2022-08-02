@@ -1,5 +1,5 @@
 import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BeamPoolTables {
@@ -48,7 +48,7 @@ public class BeamPoolTables {
         // right
 
         // list of bearings to reach trainer
-        List<int[]> bearings = new LinkedList<>();
+        List<int[]> bearings = new ArrayList<>();
 
         // keep reflecting until the distance is too far away
         int[] curTrainerPosition = {xTrainer, yTrainer, 1}; // 1 indicates trainer is here, not player
@@ -112,11 +112,22 @@ public class BeamPoolTables {
             reflectBoardRecursively(distance, bearings, xParityForTrainer, yParityForTrainer, position, "down", true);
         }
 
+        // now all bearings should be centered from the player's original position, not (0, 0)
+        for (int i = 0; i < bearings.size(); i++) {
+            int[] position = {bearings.get(i)[0], bearings.get(i)[1]};
+            int[] diff = direction(your_position, position);
+            bearings.get(i)[0] = diff[0];
+            bearings.get(i)[1] = diff[1];
+            // leave bearings.get(i)[2] the same as it was - 0 for player, 1 for trainer
+        }
 
         // debugging output
         for (int[] coords : bearings) {
             System.out.println(Arrays.toString(coords));
         }
+
+        // put them into equivalence classes
+        //Map<>
 
         // still need to filter out cases where it hits the
         // trainer first
