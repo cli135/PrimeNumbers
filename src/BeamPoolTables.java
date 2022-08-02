@@ -1,6 +1,5 @@
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Array;
+import java.util.*;
 
 public class BeamPoolTables {
 
@@ -127,7 +126,36 @@ public class BeamPoolTables {
         }
 
         // put them into equivalence classes
-        //Map<>
+        // Map<UnitVectorDirection, List<ActualPosition>> map
+        Map<List<Double>, List<int[]>> map = new HashMap<>();
+        for (int i = 0; i < bearings.size(); i++) {
+            int[] position = bearings.get(i);
+            // positions and directions are now pretty much the same thing
+            // after centralizing everything to be from the
+            // player's original position
+            // we only care about relative directions from the player's
+            // point of view
+            Double[] unitVectorDirection = unitVector(position);
+            if (map.containsKey(Arrays.asList(unitVectorDirection))) {
+                map.get(Arrays.asList(unitVectorDirection)).add(position);
+            }
+            else {
+                // for the direction we are looking in at the moment
+                List<int[]> equivalenceClass = new ArrayList<>();
+                equivalenceClass.add(position);
+                List<Double> list = Arrays.asList(unitVectorDirection);
+                map.put(
+                        Collections.unmodifiableList(list),
+                        equivalenceClass
+                );
+            }
+        }
+
+        System.out.println(map);
+
+        // i really hope this map worked out okay
+
+
 
         // still need to filter out cases where it hits the
         // trainer first
@@ -223,5 +251,19 @@ public class BeamPoolTables {
         // Pythagorean theorem for distance
         // between a vector's tail and tip
         return Math.sqrt(v[0] * v[0] + v[1] * v[1]);
+    }
+
+    // please i hope double works right and no roundoff error or at least
+    // not that much
+    public static Double[] unitVector(int[] v) {
+        Double[] ret = new Double[v.length];
+        double norm = magnitude(v);
+        ret[0] = v[0] / (double) norm;
+        ret[1] = v[1] / (double) norm;
+        for (int i = 2; i < v.length; i++) {
+            ret[i] = (Double) (double) v[i]; // copy over the rest
+            // of the elements
+        }
+        return ret;
     }
 }
