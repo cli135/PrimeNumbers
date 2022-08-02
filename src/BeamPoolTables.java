@@ -15,6 +15,19 @@ public class BeamPoolTables {
     // roundoff error in double equivalence class
         // could shift to using a custom fraction class
         // with integer numerator and denominator
+    // you need to make changes to the program and run it
+    // to gather information on what works and what doesn't
+    // also you should reread the problem description
+    // <= distance or < distance? I think <= but not sure
+        // yep it's <= so we are good, test 7 checks this
+        // since it fails on >= but succeeds on > (which is opposite of <=)
+        // update: this point resolved
+    // corner bounceback in same direction - should be taken
+        // care of, via the reflecting thing
+
+
+
+
     // This problem is a lot like
     // pool table questions,
     // geometric optics / light reflection questions
