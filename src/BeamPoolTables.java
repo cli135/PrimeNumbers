@@ -1,15 +1,12 @@
-import java.sql.Array;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class BeamPoolTables {
 
-    public static int solution2(int[] dimensions, int[] your_position, int[] trainer_position, int distance) {
-
-
-
-        // TODO: method stub
-        return 0;
-    }
     // This problem is a lot like
     // pool table questions,
     // geometric optics / light reflection questions
@@ -154,7 +151,53 @@ public class BeamPoolTables {
         System.out.println(map);
 
         // i really hope this map worked out okay
+        // TODO: be careful about <local4> is null errors that could occur here
 
+        int count = 0; // we will return this value,
+        // the count of directions we could go in
+
+        // also need to remember max distance value, don't forget that
+
+        // traversing map and applying the filter
+        // e.g. for each direction, look for the closest person
+        // if it's a player, +0 (we would hit ourselves first)
+        // if it's a trainer, +1 (and ignore any further collinear points beyond that)
+        for (Map.Entry<List<Double>, List<int[]>> entry : map.entrySet()) {
+            List<Double> unitDirection = entry.getKey();
+            List<int[]> positions = entry.getValue();
+
+
+            double minDistance = Double.MAX_VALUE;
+            int[] closestPosition = new int[3]; // just a placeholder for now
+            for (int[] position : positions) {
+                if (magnitude(position) < minDistance) {
+                    minDistance = magnitude(position);
+                    closestPosition = position;
+                }
+            }
+
+            // check whether the closest position is within the distance
+            if (minDistance > distance) {
+                continue; // we can't reach this one
+            }
+
+            // otherwise we can reach the closest one
+            // which is the only one we care about
+            // since we can't get past it to see anything behind it
+
+            if (closestPosition[2] == 0) {
+                // player is closest in this direction
+                continue; // can't aim here
+            }
+            else if (closestPosition[2] == 1) {
+                // trainer is closest in this direction
+                // we can aim here, and there is only one
+                // count added since we can't reach anything
+                // behind it
+                count++;
+            }
+
+        }
 
 
         // still need to filter out cases where it hits the
@@ -162,7 +205,8 @@ public class BeamPoolTables {
         // or the player first
         // e.g. collinear cases
         // still need to filter out cases where it is too far away too
-        return bearings.size();
+        System.out.println("count is: " + count);
+        return count;
     }
 
     private static void reflectBoardRecursively(int distance, List<int[]> bearings, int[] xParityForTrainer, int[] yParityForTrainer, int[] position, String direction, boolean isPlayer) {
@@ -256,14 +300,18 @@ public class BeamPoolTables {
     // please i hope double works right and no roundoff error or at least
     // not that much
     public static Double[] unitVector(int[] v) {
-        Double[] ret = new Double[v.length];
+        Double[] ret = new Double[2];
         double norm = magnitude(v);
         ret[0] = v[0] / (double) norm;
         ret[1] = v[1] / (double) norm;
-        for (int i = 2; i < v.length; i++) {
-            ret[i] = (Double) (double) v[i]; // copy over the rest
-            // of the elements
-        }
+        // actually we don't want to copy any add'l info over
+        // just the direction
+        // nothing else, like whether it was a player or trainer
+        // that will all get combined together
+//        for (int i = 2; i < v.length; i++) {
+//            ret[i] = (Double) (double) v[i]; // copy over the rest
+//            // of the elements
+//        }
         return ret;
     }
 }
