@@ -53,6 +53,9 @@ public class BeamPoolTables {
         bearings.add(curTrainerPosition);
 
 
+        // i think the -1 here is good since it offset
+        // for the center at (1, 1)
+        // regardless of player (your) position
         int[] xParityForTrainer = {2 * (xDim - xTrainer), 2 * (xTrainer - 1)};
         int[] xParityForPlayer = {2 * (xDim - xPlayer), 2 * (xPlayer - 1)};
         int[] yParityForTrainer = {2 * (yDim - yTrainer), 2 * (yTrainer - 1)};
@@ -131,7 +134,7 @@ public class BeamPoolTables {
 
         // debugging output
         for (int[] coords : bearings) {
-            // System.out.println(Arrays.toString(coords));
+            //System.out.println(Arrays.toString(coords));
         }
 
         // put them into equivalence classes
@@ -160,7 +163,7 @@ public class BeamPoolTables {
             }
         }
 
-        // System.out.println(map);
+        //System.out.println(map);
 
         // i really hope this map worked out okay
         // TODO: be careful about <local4> is null errors that could occur here
@@ -201,7 +204,7 @@ public class BeamPoolTables {
 
             if (closestPosition[2] == 0) {
                 // player is closest in this direction
-                // System.out.println("we did get some cases like this here");
+                //System.out.println("we did get some cases like this here");
                 continue; // can't aim here
             }
             else if (closestPosition[2] == 1) {
@@ -213,11 +216,15 @@ public class BeamPoolTables {
                 if (closestPosition[0] == -1 && your_position[0] == 1) {
                     continue; // can't go straight left
                 }
+                if (closestPosition[1] == -1 && your_position[1] == 1) {
+                    continue; // can't go straight down
+                }
 
                 count++;
                 // tell us what was added
-//                // System.out.println(unitDirection);
-                // System.out.println(Arrays.toString(closestPosition));
+//                //System.out.println(unitDirection);
+                //System.out.println(Arrays.toString(closestPosition));
+                //System.out.println("magnitude is: " + magnitude(closestPosition));
             }
 
         }
@@ -228,7 +235,7 @@ public class BeamPoolTables {
         // or the player first
         // e.g. collinear cases
         // still need to filter out cases where it is too far away too
-        // System.out.println("count is: " + count);
+        //System.out.println("count is: " + count);
         return count;
     }
 
@@ -246,7 +253,7 @@ public class BeamPoolTables {
         else {
             // shouldn't happen, but will throw an
             // IndexOutOfBoundsException in case, just to let us know
-            // System.out.println("error: shouldn't have gotten here");
+            //System.out.println("error: shouldn't have gotten here");
             toggle = curTrainerPosition.length; // IndexOutOfBoundsException
         }
         while (totalDistanceOut <= distance) {
@@ -275,7 +282,7 @@ public class BeamPoolTables {
             }
             else {
                 // just a stub here, shouldn't reach this case
-                // System.out.println("error: shouldn't reach this case");
+                //System.out.println("error: shouldn't reach this case");
                 reflected[0] = curTrainerPosition[0] + xParityForTrainer[toggle];
             }
 
@@ -338,13 +345,13 @@ public class BeamPoolTables {
         int[] trainer_position = {2, 1};
         int distance = 4;
         int test = BeamPoolTables.solution(dimensions, your_position, trainer_position, distance);
-        System.out.println(test);
+        //System.out.println(test);
 
         int test2 = BeamPoolTables.solution(new int[]{300, 275},
                                             new int[]{150, 150},
                                             new int[]{185, 100},
                                     500);
-        System.out.println(test2);
+        //System.out.println(test2);
 
     }
 
