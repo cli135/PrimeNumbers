@@ -117,9 +117,21 @@ public class BeamPoolTables {
             // leave bearings.get(i)[2] the same as it was - 0 for player, 1 for trainer
         }
 
+        // remove any (0, 0, x) bearings
+        // going in reverse when we remove from an ArrayList
+        // so we don't mess up our traversal
+        // (only rightward elements are shifted over toward the left,
+        // leftward elements remain as they were at the inception of the loop)
+        for (int i = bearings.size() - 1; i >= 0; i--) {
+            int[] position = bearings.get(i);
+            if (position[0] == 0 && position[1] == 0) {
+                bearings.remove(i);
+            }
+        }
+
         // debugging output
         for (int[] coords : bearings) {
-            System.out.println(Arrays.toString(coords));
+            // System.out.println(Arrays.toString(coords));
         }
 
         // put them into equivalence classes
@@ -148,7 +160,7 @@ public class BeamPoolTables {
             }
         }
 
-        System.out.println(map);
+        // System.out.println(map);
 
         // i really hope this map worked out okay
         // TODO: be careful about <local4> is null errors that could occur here
@@ -185,8 +197,11 @@ public class BeamPoolTables {
             // which is the only one we care about
             // since we can't get past it to see anything behind it
 
+            // i have a feeling that (0, 0, x) could be causing issues
+
             if (closestPosition[2] == 0) {
                 // player is closest in this direction
+                // System.out.println("we did get some cases like this here");
                 continue; // can't aim here
             }
             else if (closestPosition[2] == 1) {
@@ -194,7 +209,15 @@ public class BeamPoolTables {
                 // we can aim here, and there is only one
                 // count added since we can't reach anything
                 // behind it
+
+                if (closestPosition[0] == -1 && your_position[0] == 1) {
+                    continue; // can't go straight left
+                }
+
                 count++;
+                // tell us what was added
+//                // System.out.println(unitDirection);
+                // System.out.println(Arrays.toString(closestPosition));
             }
 
         }
@@ -205,7 +228,7 @@ public class BeamPoolTables {
         // or the player first
         // e.g. collinear cases
         // still need to filter out cases where it is too far away too
-        System.out.println("count is: " + count);
+        // System.out.println("count is: " + count);
         return count;
     }
 
@@ -223,7 +246,7 @@ public class BeamPoolTables {
         else {
             // shouldn't happen, but will throw an
             // IndexOutOfBoundsException in case, just to let us know
-            System.out.println("error: shouldn't have gotten here");
+            // System.out.println("error: shouldn't have gotten here");
             toggle = curTrainerPosition.length; // IndexOutOfBoundsException
         }
         while (totalDistanceOut <= distance) {
@@ -252,7 +275,7 @@ public class BeamPoolTables {
             }
             else {
                 // just a stub here, shouldn't reach this case
-                System.out.println("error: shouldn't reach this case");
+                // System.out.println("error: shouldn't reach this case");
                 reflected[0] = curTrainerPosition[0] + xParityForTrainer[toggle];
             }
 
@@ -270,13 +293,7 @@ public class BeamPoolTables {
         }
     }
 
-    public static void main(String[] args) {
-        int[] dimensions = {3, 2};
-        int[] your_position = {1, 1};
-        int[] trainer_position = {2, 1};
-        int distance = 4;
-        int test = BeamPoolTables.solution(dimensions, your_position, trainer_position, distance);
-    }
+
 
     // vector subtraction in 2D Cartesian plane
     public static int[] direction(int[] start, int[] end) {
@@ -314,4 +331,21 @@ public class BeamPoolTables {
 //        }
         return ret;
     }
+
+    public static void main(String[] args) {
+        int[] dimensions = {3, 2};
+        int[] your_position = {1, 1};
+        int[] trainer_position = {2, 1};
+        int distance = 4;
+        int test = BeamPoolTables.solution(dimensions, your_position, trainer_position, distance);
+        System.out.println(test);
+
+        int test2 = BeamPoolTables.solution(new int[]{300, 275},
+                                            new int[]{150, 150},
+                                            new int[]{185, 100},
+                                    500);
+        System.out.println(test2);
+
+    }
+
 }
