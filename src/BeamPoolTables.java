@@ -5,11 +5,28 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.Collections;
 
+//class Fraction {
+//    boolean positive;
+//    int numerator;
+//    int denominator;
+//    public Fraction(int n, int d, boolean sign) {
+//        numerator = n;
+//        denominator = d;
+//        positive = sign;
+//    }
+//}
+
 public class BeamPoolTables {
 
     // 8-2-2022 6:50pm
     // not passing tests 5 and 9 at the moment
     // potential reasons:
+    // doesn't seem like there is roundoff error
+        // even after transitioning to a new thing, int[] gcd simplified
+        // arrays, it still works the same
+        // and anyways roundoff error should be deterministic and should
+        // be the same each time
+        // so this probably means the issue is something else
     // time limit exceeded
     // finish out the change from (1, 1) to (0, 0)
     // roundoff error in double equivalence class
@@ -162,7 +179,7 @@ public class BeamPoolTables {
 
         // put them into equivalence classes
         // Map<UnitVectorDirection, List<ActualPosition>> map
-        Map<List<Double>, List<int[]>> map = new HashMap<>();
+        Map<List<Integer>, List<int[]>> map = new HashMap<>();
         for (int i = 0; i < bearings.size(); i++) {
             int[] position = bearings.get(i);
             // positions and directions are now pretty much the same thing
@@ -170,7 +187,7 @@ public class BeamPoolTables {
             // player's original position
             // we only care about relative directions from the player's
             // point of view
-            Double[] unitVectorDirection = unitVector(position);
+            Integer[] unitVectorDirection = unitVector(position);
             if (map.containsKey(Arrays.asList(unitVectorDirection))) {
                 map.get(Arrays.asList(unitVectorDirection)).add(position);
             }
@@ -178,7 +195,7 @@ public class BeamPoolTables {
                 // for the direction we are looking in at the moment
                 List<int[]> equivalenceClass = new ArrayList<>();
                 equivalenceClass.add(position);
-                List<Double> list = Arrays.asList(unitVectorDirection);
+                List<Integer> list = Arrays.asList(unitVectorDirection);
                 map.put(
                         Collections.unmodifiableList(list),
                         equivalenceClass
@@ -200,8 +217,8 @@ public class BeamPoolTables {
         // e.g. for each direction, look for the closest person
         // if it's a player, +0 (we would hit ourselves first)
         // if it's a trainer, +1 (and ignore any further collinear points beyond that)
-        for (Map.Entry<List<Double>, List<int[]>> entry : map.entrySet()) {
-            List<Double> unitDirection = entry.getKey();
+        for (Map.Entry<List<Integer>, List<int[]>> entry : map.entrySet()) {
+            List<Integer> unitDirection = entry.getKey();
             List<int[]> positions = entry.getValue();
 
 
@@ -280,7 +297,7 @@ public class BeamPoolTables {
             //System.out.println("error: shouldn't have gotten here");
             toggle = curTrainerPosition.length; // IndexOutOfBoundsException
         }
-        while (totalDistanceOut <= 2 * distance) {
+        while (totalDistanceOut <= distance) {
             // reflect the cur position
             // just a template that will change based on if-elseif-else statements below
             int[] reflected = {curTrainerPosition[0] - xParityForTrainer[toggle], curTrainerPosition[1], 1};
@@ -347,11 +364,13 @@ public class BeamPoolTables {
 
     // please i hope double works right and no roundoff error or at least
     // not that much
-    public static Double[] unitVector(int[] v) {
-        Double[] ret = new Double[2];
-        double norm = magnitude(v);
-        ret[0] = v[0] / (double) norm;
-        ret[1] = v[1] / (double) norm;
+    public static Integer[] unitVector(int[] v) {
+        // Fraction[] ret = new Fraction[2];
+//        double norm = magnitude(v);
+        return simplify(v);
+
+        // ret[0] = new Fraction(simplified[0], simplified[1], (simplified[0] * simplified[1]) > 0 ? true : false);
+        // ret[1] = v[1] / (double) norm;
         // actually we don't want to copy any add'l info over
         // just the direction
         // nothing else, like whether it was a player or trainer
@@ -360,7 +379,7 @@ public class BeamPoolTables {
 //            ret[i] = (Double) (double) v[i]; // copy over the rest
 //            // of the elements
 //        }
-        return ret;
+        // return ret;
     }
 
     public static void main(String[] args) {
@@ -377,6 +396,26 @@ public class BeamPoolTables {
                                     500);
         //System.out.println(test2);
 
+    }
+
+    // instead of using the unit vector as a representation
+    // use the, what do you call it
+    // use the smallest integer as a representation
+    // and do simplifying like you did before
+
+    public static Integer[] simplify(int[] frac) {
+        int gcd = gcd((int) Math.abs(frac[0]), (int) Math.abs(frac[1]));
+        return new Integer[]{frac[0] / gcd, frac[1] / gcd};
+    }
+
+    public static int gcd(int x, int y) {
+        int a = Math.min(x, y);
+        int b = Math.max(x, y);
+        if (a == 0) {
+            return b;
+        }
+        // Euclidean algorithm
+        return gcd(a, b-a);
     }
 
 }
