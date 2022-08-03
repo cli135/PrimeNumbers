@@ -16,6 +16,10 @@ import java.util.Collections;
 //    }
 //}
 
+// i am convinced it is runtime that is too slow
+// time limit exceeded
+// look at using constant factors to speed up the program
+
 public class BeamPoolTables {
 
     // 8-2-2022 6:50pm
@@ -105,7 +109,7 @@ public class BeamPoolTables {
 
         // same thing, but going left now, reflecting to the left
         // t == 1 means that we are starting with a different reflection first
-        reflectBoardRecursively(distance, bearings, xParityForTrainer, yParityForTrainer, curTrainerPosition, "left", false);
+        //        reflectBoardRecursively(distance, bearings, xParityForTrainer, yParityForTrainer, curTrainerPosition, "left", false);
 
         // for each of the horizontal reflection images, we will reflect *those*
         // up and down
@@ -119,7 +123,7 @@ public class BeamPoolTables {
         for (int i = 0; i < traverseLength; i++) {
             int[] position = bearings.get(i);
             reflectBoardRecursively(distance, bearings, xParityForTrainer, yParityForTrainer, position, "up", false);
-            reflectBoardRecursively(distance, bearings, xParityForTrainer, yParityForTrainer, position, "down", false);
+//            reflectBoardRecursively(distance, bearings, xParityForTrainer, yParityForTrainer, position, "down", false);
         }
 
         // now doing the same thing but for the player
@@ -136,7 +140,7 @@ public class BeamPoolTables {
 
         // same thing, but going left now, reflecting to the left
         // t == 1 means that we are starting with a different reflection first
-        reflectBoardRecursively(distance, bearings, xParityForPlayer, yParityForPlayer, curPlayerPosition, "left", true);
+//        reflectBoardRecursively(distance, bearings, xParityForPlayer, yParityForPlayer, curPlayerPosition, "left", true);
 
         // for each of the horizontal reflection images, we will reflect *those*
         // up and down
@@ -147,7 +151,21 @@ public class BeamPoolTables {
         for (int i = idxSaved; i < traverseLength; i++) {
             int[] position = bearings.get(i);
             reflectBoardRecursively(distance, bearings, xParityForTrainer, yParityForTrainer, position, "up", true);
-            reflectBoardRecursively(distance, bearings, xParityForTrainer, yParityForTrainer, position, "down", true);
+//            reflectBoardRecursively(distance, bearings, xParityForTrainer, yParityForTrainer, position, "down", true);
+        }
+
+        // do all 4 quadrants
+        // -x, y
+        // x, -y
+        // -x, -y
+        // oops save the size beforehand
+        traverseLength = bearings.size();
+        for (int i = 0; i < traverseLength; i++) {
+            int[] position = bearings.get(i);
+            // other three quadrants
+            bearings.add(new int[]{-position[0], position[1], position[2]});
+            bearings.add(new int[]{position[0], -position[1], position[2]});
+            bearings.add(new int[]{-position[0],-position[1], position[2]});
         }
 
         // now all bearings should be centered from the player's original position, not (0, 0)
@@ -382,22 +400,6 @@ public class BeamPoolTables {
         // return ret;
     }
 
-    public static void main(String[] args) {
-        int[] dimensions = {3, 2};
-        int[] your_position = {1, 1};
-        int[] trainer_position = {2, 1};
-        int distance = 4;
-        int test = BeamPoolTables.solution(dimensions, your_position, trainer_position, distance);
-        //System.out.println(test);
-
-        int test2 = BeamPoolTables.solution(new int[]{300, 275},
-                                            new int[]{150, 150},
-                                            new int[]{185, 100},
-                                    500);
-        //System.out.println(test2);
-
-    }
-
     // instead of using the unit vector as a representation
     // use the, what do you call it
     // use the smallest integer as a representation
@@ -417,5 +419,65 @@ public class BeamPoolTables {
         // Euclidean algorithm
         return gcd(a, b-a);
     }
+
+    public static void main(String[] args) {
+        int[] dimensions = {3, 2};
+        int[] your_position = {1, 1};
+        int[] trainer_position = {2, 1};
+        int distance = 4;
+        int test = BeamPoolTables.solution(dimensions, your_position, trainer_position, distance);
+        System.out.println(test);
+
+        int test2 = BeamPoolTables.solution(new int[]{300, 275},
+                new int[]{150, 150},
+                new int[]{185, 100},
+                500);
+        System.out.println(test2);
+
+        int test3 = BeamPoolTables.solution(new int[]{10, 10},
+                new int[]{4, 4},
+                new int[]{3, 3},
+                5000);
+        System.out.println(test3);
+
+        int test4 = BeamPoolTables.solution(new int[]{2, 5},
+                new int[]{1, 2},
+                new int[]{1, 4},
+                11);
+        System.out.println(test4);
+
+
+        int test5 = BeamPoolTables.solution(new int[]{23, 10},
+                new int[]{6, 4},
+                new int[]{3, 2},
+                23);
+        System.out.println(test5);
+
+        int test6 = BeamPoolTables.solution(new int[]{23, 10},
+                new int[]{6, 4},
+                new int[]{3, 2},
+                23);
+        System.out.println(test6);
+
+        int test7 = BeamPoolTables.solution(new int[]{23, 10},
+                new int[]{6, 4},
+                new int[]{3, 2},
+                23);
+        System.out.println(test7);
+
+        int test8 = BeamPoolTables.solution(new int[]{1250, 1250},
+                new int[]{1000, 1000},
+                new int[]{500, 400},
+                10000);
+        System.out.println(test8);
+
+
+
+
+        //System.out.println(test2);
+
+    }
+
+
 
 }
