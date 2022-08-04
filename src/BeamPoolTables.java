@@ -208,7 +208,13 @@ public class BeamPoolTables {
             // point of view
             Integer[] unitVectorDirection = unitVector(position);
             if (map.containsKey(Arrays.asList(unitVectorDirection))) {
-                map.get(Arrays.asList(unitVectorDirection)).add(position);
+//                map.get(Arrays.asList(unitVectorDirection)).add(position);
+                int[] cur = map.get(Arrays.asList(unitVectorDirection)).get(0);
+                if (magnitude(position) < magnitude(cur)) {
+                    // position is closer than cur
+                    map.get(Arrays.asList(unitVectorDirection)).remove(0);
+                    map.get(Arrays.asList(unitVectorDirection)).add(position);
+                }
             }
             else {
                 // for the direction we are looking in at the moment
@@ -241,14 +247,16 @@ public class BeamPoolTables {
             List<int[]> positions = entry.getValue();
 
 
-            double minDistance = Double.MAX_VALUE;
-            int[] closestPosition = new int[3]; // just a placeholder for now
-            for (int[] position : positions) {
-                if (magnitude(position) < minDistance) {
-                    minDistance = magnitude(position);
-                    closestPosition = position;
-                }
-            }
+//            double minDistance = Double.MAX_VALUE;
+//            int[] closestPosition = new int[3]; // just a placeholder for now
+//            for (int[] position : positions) {
+//                if (magnitude(position) < minDistance) {
+//                    minDistance = magnitude(position);
+//                    closestPosition = position;
+//                }
+//            }
+            int[] closestPosition = positions.get(0);
+            Double minDistance = magnitude(closestPosition);
 
             // check whether the closest position is within the distance
             if (minDistance > distance) {
