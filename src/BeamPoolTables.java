@@ -192,13 +192,13 @@ public class BeamPoolTables {
         }
 
         // debugging output
-        for (int[] coords : bearings) {
-            //System.out.println(Arrays.toString(coords));
-        }
+//        for (int[] coords : bearings) {
+//            //System.out.println(Arrays.toString(coords));
+//        }
 
         // put them into equivalence classes
         // Map<UnitVectorDirection, List<ActualPosition>> map
-        Map<List<Integer>, List<int[]>> map = new HashMap<>();
+        Map<List<Integer>, int[]> map = new HashMap<>();
         for (int i = 0; i < bearings.size(); i++) {
             int[] position = bearings.get(i);
             // positions and directions are now pretty much the same thing
@@ -209,21 +209,20 @@ public class BeamPoolTables {
             Integer[] unitVectorDirection = unitVector(position);
             if (map.containsKey(Arrays.asList(unitVectorDirection))) {
 //                map.get(Arrays.asList(unitVectorDirection)).add(position);
-                int[] cur = map.get(Arrays.asList(unitVectorDirection)).get(0);
+                int[] cur = map.get(Arrays.asList(unitVectorDirection));
                 if (magnitude(position) < magnitude(cur)) {
                     // position is closer than cur
-                    map.get(Arrays.asList(unitVectorDirection)).remove(0);
-                    map.get(Arrays.asList(unitVectorDirection)).add(position);
+                    map.put(Arrays.asList(unitVectorDirection), position);
                 }
             }
             else {
                 // for the direction we are looking in at the moment
-                List<int[]> equivalenceClass = new ArrayList<>();
-                equivalenceClass.add(position);
+//                List<int[]> equivalenceClass = new ArrayList<>();
+//                equivalenceClass.add(position);
                 List<Integer> list = Arrays.asList(unitVectorDirection);
                 map.put(
                         Collections.unmodifiableList(list),
-                        equivalenceClass
+                        position
                 );
             }
         }
@@ -242,9 +241,9 @@ public class BeamPoolTables {
         // e.g. for each direction, look for the closest person
         // if it's a player, +0 (we would hit ourselves first)
         // if it's a trainer, +1 (and ignore any further collinear points beyond that)
-        for (Map.Entry<List<Integer>, List<int[]>> entry : map.entrySet()) {
+        for (Map.Entry<List<Integer>, int[]> entry : map.entrySet()) {
             List<Integer> unitDirection = entry.getKey();
-            List<int[]> positions = entry.getValue();
+            int[] position = entry.getValue();
 
 
 //            double minDistance = Double.MAX_VALUE;
@@ -255,7 +254,7 @@ public class BeamPoolTables {
 //                    closestPosition = position;
 //                }
 //            }
-            int[] closestPosition = positions.get(0);
+            int[] closestPosition = position;
             Double minDistance = magnitude(closestPosition);
 
             // check whether the closest position is within the distance
@@ -307,15 +306,15 @@ public class BeamPoolTables {
         // e.g. collinear cases
         // still need to filter out cases where it is too far away too
 
-        for (Map.Entry<List<Integer>, List<int[]>> entry : map.entrySet()) {
-            List<Integer> unitDirection = entry.getKey();
-            List<int[]> positions = entry.getValue();
-            //System.out.println(unitDirection);
-            for (int[] position : positions) {
-                //System.out.print("\t");
-                //System.out.println(Arrays.toString(position));
-            }
-        }
+//        for (Map.Entry<List<Integer>, List<int[]>> entry : map.entrySet()) {
+//            List<Integer> unitDirection = entry.getKey();
+//            List<int[]> positions = entry.getValue();
+//            //System.out.println(unitDirection);
+//            for (int[] position : positions) {
+//                //System.out.print("\t");
+//                //System.out.println(Arrays.toString(position));
+//            }
+//        }
 
             //System.out.println("count is: " + count);
         return count;
