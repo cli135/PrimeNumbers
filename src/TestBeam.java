@@ -26,18 +26,6 @@ public class TestBeam {
         System.out.println(test4);
 
 
-        int test5 = BeamPoolTables.solution(new int[]{23, 10},
-                new int[]{6, 4},
-                new int[]{3, 2},
-                23);
-        System.out.println(test5);
-
-        int test6 = BeamPoolTables.solution(new int[]{23, 10},
-                new int[]{6, 4},
-                new int[]{3, 2},
-                23);
-        System.out.println(test6);
-
         int test7 = BeamPoolTables.solution(new int[]{23, 10},
                 new int[]{6, 4},
                 new int[]{3, 2},
@@ -49,6 +37,18 @@ public class TestBeam {
                 new int[]{500, 400},
                 10000);
         System.out.println(test8);
+
+        int test9 = BeamPoolTables.solution(new int[]{10, 10},
+                new int[]{5, 8},
+                new int[]{1, 7},
+                6);
+        System.out.println(test9);
+
+        int test10 = BeamPoolTables.solution(new int[]{10, 10},
+                new int[]{5, 8},
+                new int[]{1, 7},
+                10000);
+        System.out.println(test10);
 
 
 

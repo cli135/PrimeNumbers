@@ -26,25 +26,25 @@ public class BeamPoolTables {
     // not passing tests 5 and 9 at the moment
     // potential reasons:
     // doesn't seem like there is roundoff error
-        // even after transitioning to a new thing, int[] gcd simplified
-        // arrays, it still works the same
-        // and anyways roundoff error should be deterministic and should
-        // be the same each time
-        // so this probably means the issue is something else
+    // even after transitioning to a new thing, int[] gcd simplified
+    // arrays, it still works the same
+    // and anyways roundoff error should be deterministic and should
+    // be the same each time
+    // so this probably means the issue is something else
     // time limit exceeded
     // finish out the change from (1, 1) to (0, 0)
     // roundoff error in double equivalence class
-        // could shift to using a custom fraction class
-        // with integer numerator and denominator
+    // could shift to using a custom fraction class
+    // with integer numerator and denominator
     // you need to make changes to the program and run it
     // to gather information on what works and what doesn't
     // also you should reread the problem description
     // <= distance or < distance? I think <= but not sure
-        // yep it's <= so we are good, test 7 checks this
-        // since it fails on >= but succeeds on > (which is opposite of <=)
-        // update: this point resolved
+    // yep it's <= so we are good, test 7 checks this
+    // since it fails on >= but succeeds on > (which is opposite of <=)
+    // update: this point resolved
     // corner bounceback in same direction - should be taken
-        // care of, via the reflecting thing
+    // care of, via the reflecting thing
 
 
 
@@ -150,7 +150,8 @@ public class BeamPoolTables {
         traverseLength = bearings.size();
         for (int i = idxSaved; i < traverseLength; i++) {
             int[] position = bearings.get(i);
-            reflectBoardRecursively(distance, bearings, xParityForTrainer, yParityForTrainer, position, "up", true);
+            // lesson learned: make sure you get the parameter calls right
+            reflectBoardRecursively(distance, bearings, xParityForPlayer, yParityForPlayer, position, "up", true);
 //            reflectBoardRecursively(distance, bearings, xParityForTrainer, yParityForTrainer, position, "down", true);
         }
 
@@ -262,7 +263,7 @@ public class BeamPoolTables {
 
             if (closestPosition[2] == 0) {
                 // player is closest in this direction
-                //System.out.println("we did get some cases like this here");
+                ////System.out.println("we did get some cases like this here");
                 continue; // can't aim here
             }
             else if (closestPosition[2] == 1) {
@@ -282,8 +283,11 @@ public class BeamPoolTables {
                 count++;
                 // tell us what was added
 //                //System.out.println(unitDirection);
-                //System.out.println(Arrays.toString(closestPosition));
-                //System.out.println("magnitude is: " + magnitude(closestPosition));
+                //System.out.print(Arrays.toString(closestPosition));
+                //System.out.println("  magnitude is: " + magnitude(closestPosition));
+//                //System.out.print(Arrays.toString(closestPosition));
+//                //System.out.println((double)Math.round(magnitude(closestPosition) * 1000d) / 1000d);
+
             }
 
         }
@@ -294,62 +298,43 @@ public class BeamPoolTables {
         // or the player first
         // e.g. collinear cases
         // still need to filter out cases where it is too far away too
-        //System.out.println("count is: " + count);
+
+        for (Map.Entry<List<Integer>, List<int[]>> entry : map.entrySet()) {
+            List<Integer> unitDirection = entry.getKey();
+            List<int[]> positions = entry.getValue();
+            //System.out.println(unitDirection);
+            for (int[] position : positions) {
+                //System.out.print("\t");
+                //System.out.println(Arrays.toString(position));
+            }
+        }
+
+            //System.out.println("count is: " + count);
         return count;
     }
 
     private static void reflectBoardRecursively(int distance, List<int[]> bearings, int[] xParityForTrainer, int[] yParityForTrainer, int[] position, String direction, boolean isPlayer) {
-        int totalDistanceOut = 0;
+//        int totalDistanceOut = 0;
         int[] curTrainerPosition = position;
 
-        int toggle;
-        if ("right".equals(direction) || "up".equals(direction)) {
-            toggle = 0;
-        }
-        else if ("left".equals(direction) || "down".equals(direction)) {
-            toggle = 1;
-        }
-        else {
-            // shouldn't happen, but will throw an
-            // IndexOutOfBoundsException in case, just to let us know
-            //System.out.println("error: shouldn't have gotten here");
-            toggle = curTrainerPosition.length; // IndexOutOfBoundsException
-        }
-        while (totalDistanceOut <= distance) {
+        int toggle = 0;
+
+        // increasing total distance out
+        for (int totalDistanceOut = 0; totalDistanceOut <= distance; totalDistanceOut += xParityForTrainer[toggle]) {
             // reflect the cur position
             // just a template that will change based on if-elseif-else statements below
             int[] reflected = {curTrainerPosition[0] - xParityForTrainer[toggle], curTrainerPosition[1], 1};
-            if (isPlayer) {
-                reflected[2] = 0; // player representation
-            }
-            else {
-                reflected[2] = 1; // trainer
-            }
-            if ("left".equals(direction)) {
-                reflected[0] = curTrainerPosition[0] - xParityForTrainer[toggle];
-            }
-            else if ("right".equals(direction)) {
+            reflected[2] = isPlayer ? 0 : 1;
+            if ("right".equals(direction)) {
                 reflected[0] = curTrainerPosition[0] + xParityForTrainer[toggle];
             }
             else if ("up".equals(direction)) {
                 reflected[0] = curTrainerPosition[0];
                 reflected[1] = curTrainerPosition[1] + yParityForTrainer[toggle];
             }
-            else if ("down".equals(direction)) {
-                reflected[0] = curTrainerPosition[0];
-                reflected[1] = curTrainerPosition[1] - yParityForTrainer[toggle];
-            }
-            else {
-                // just a stub here, shouldn't reach this case
-                //System.out.println("error: shouldn't reach this case");
-                reflected[0] = curTrainerPosition[0] + xParityForTrainer[toggle];
-            }
 
             // add it to the bearings list
             bearings.add(reflected);
-
-            // increase total distance out
-            totalDistanceOut += xParityForTrainer[toggle];
 
             // toggle jump
             toggle = toggle == 0 ? 1 : 0;
@@ -417,7 +402,7 @@ public class BeamPoolTables {
             return b;
         }
         // Euclidean algorithm
-        return gcd(a, b-a);
+        return gcd(a, b%a);
     }
 
 
