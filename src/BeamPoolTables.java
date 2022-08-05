@@ -331,7 +331,15 @@ public class BeamPoolTables {
         int toggle = 0;
 
         // increasing total distance out
-        for (int totalDistanceOut = 0; totalDistanceOut <= distance; totalDistanceOut += xParityForTrainer[toggle]) {
+        int change;
+        if ("right".equals(direction)) {
+            change = xParityForTrainer[(toggle + 1) % 2];
+        }
+        else {
+            // up direction
+            change = yParityForTrainer[(toggle + 1) % 2];
+        }
+        for (int totalDistanceOut = 0; totalDistanceOut <= distance; totalDistanceOut += change) {
             // reflect the cur position
             // just a template that will change based on if-elseif-else statements below
             int[] reflected = {curTrainerPosition[0] - xParityForTrainer[toggle], curTrainerPosition[1], 1};
@@ -349,6 +357,86 @@ public class BeamPoolTables {
 
             // toggle jump
             toggle = toggle == 0 ? 1 : 0;
+
+
+            // update change
+            // finally found the bug:
+            //**************************
+            // you need to account for toggling early and flipping back
+            // to the one you just had instead of adding a too large
+            // distance on the next iteration
+            // the order in which you update variables in a loop body
+            // is important
+            // for this reason it is better to use while loops than
+            // for loops when you are using complicated loop bodies
+            // because while loops you can customize the order of updates
+            // when updating loop variables
+            // whereas with for loops it is not immediately apparent
+            // that the loop condition update is actually run last
+            // and isn't even in the same scope, it seems, as the rest
+            // of the variables
+            // reducing the possibility of interedependencies that
+            // could be used
+
+            // additionally:
+            // when updating the loop variable
+            // usually it is not so simply as just doing totalDistanceOut += xParity...
+            // especially when toggling between jumps,
+            // in fact toggling between not 2 kinds of jumps, but 4 kinds total,
+            // depending on whether you are jumping up or right,
+            // your loop variable update will not always be of the same form
+            // as in, adding an element in the xParity array
+            // in fact, the true answer is that you have to update
+            // with the xparity if you are going right,
+
+            // but with the yparity if you are jumping up
+
+            // this is common sense when doing the algorithm on paper,
+
+            // but when doing 1) for loops and 2) odd-even parity jumps, with 2 different
+            // categories for right and up,
+
+            // make sure you pass in the correct named parameters (not xParityTrainer all the time)
+            // for function calls and make sure names are distinct
+
+            // also, make sure you use while loops to fully customize the order of
+            // loop variable updates
+
+            // and make sure that your toggle variable is not lagging one iteration
+            // behind if you updated it in the wrong order (which i did)
+
+            // and make sure that your funciton can handle both the right and up
+            // cases, meaning that it will not always base itself off of xparity
+            // and will customize for right with xparity, and up with yparity
+
+            // in fact you should have avoided string arguments like "right" and "up"
+            // in the first place because that just invites conflicts and accidental
+            // 'oh i forgot to update that case too'
+            // scenarios
+
+
+            // the best solution is to use a while loop and really think
+            // about how you want to update a given loop variable
+                // which order to update variables
+                // whether you need xparity or yparity to update
+                // depending on parameters right or up coming in
+            // and to have functions do 1 thing and 1 thing only,
+            // instead of "right" and "up" casework
+            // just to have them as separate funcitons
+
+
+            // lesson learned: parity is very hard to get right
+            // in state based programs
+            // even when you think you have it right,
+            // you need to use the debugger
+
+            if ("right".equals(direction)) {
+                change = xParityForTrainer[(toggle + 1) % 2];
+            }
+            else {
+                // up direction
+                change = yParityForTrainer[(toggle + 1) % 2];
+            }
 
             // update cur trainer position to the recently reflected point
             curTrainerPosition = reflected;
