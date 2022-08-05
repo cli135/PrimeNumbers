@@ -192,9 +192,9 @@ public class BeamPoolTables {
         }
 
         // debugging output
-//        for (int[] coords : bearings) {
-//            //System.out.println(Arrays.toString(coords));
-//        }
+        for (int[] coords : bearings) {
+            //System.out.println(Arrays.toString(coords));
+        }
 
         // put them into equivalence classes
         // Map<UnitVectorDirection, List<ActualPosition>> map
@@ -241,6 +241,7 @@ public class BeamPoolTables {
         // e.g. for each direction, look for the closest person
         // if it's a player, +0 (we would hit ourselves first)
         // if it's a trainer, +1 (and ignore any further collinear points beyond that)
+        Map<List<Integer>, int[]> trueMap = new HashMap<>();
         for (Map.Entry<List<Integer>, int[]> entry : map.entrySet()) {
             List<Integer> unitDirection = entry.getKey();
             int[] position = entry.getValue();
@@ -259,6 +260,7 @@ public class BeamPoolTables {
 
             // check whether the closest position is within the distance
             if (minDistance > distance) {
+
                 continue; // we can't reach this one
             }
 
@@ -270,7 +272,7 @@ public class BeamPoolTables {
 
             if (closestPosition[2] == 0) {
                 // player is closest in this direction
-                ////System.out.println("we did get some cases like this here");
+                //System.out.println("we did get some cases like this here");
                 continue; // can't aim here
             }
             else if (closestPosition[2] == 1) {
@@ -286,14 +288,16 @@ public class BeamPoolTables {
 //                if (closestPosition[1] == -1 && your_position[1] == 1) {
 //                    continue; // can't go straight down
 //                }
-
+                trueMap.put(unitDirection, position);
                 count++;
                 // tell us what was added
-//                //System.out.println(unitDirection);
+//                System.out.println(unitDirection);
                 //System.out.print(Arrays.toString(closestPosition));
-                //System.out.println("  magnitude is: " + magnitude(closestPosition));
-//                //System.out.print(Arrays.toString(closestPosition));
-//                //System.out.println((double)Math.round(magnitude(closestPosition) * 1000d) / 1000d);
+                //System.out.print("   " + Math.atan2(closestPosition[0], closestPosition[1]));
+                //System.out.println();
+//                System.out.println("  magnitude is: " + magnitude(closestPosition));
+//                System.out.print(Arrays.toString(closestPosition));
+//                System.out.println((double)Math.round(magnitude(closestPosition) * 1000d) / 1000d);
 
             }
 
@@ -306,17 +310,17 @@ public class BeamPoolTables {
         // e.g. collinear cases
         // still need to filter out cases where it is too far away too
 
-//        for (Map.Entry<List<Integer>, List<int[]>> entry : map.entrySet()) {
-//            List<Integer> unitDirection = entry.getKey();
-//            List<int[]> positions = entry.getValue();
-//            //System.out.println(unitDirection);
-//            for (int[] position : positions) {
-//                //System.out.print("\t");
-//                //System.out.println(Arrays.toString(position));
-//            }
-//        }
+        // debugging output
+        // printing out each direction and its closest node in that direction
+        for (Map.Entry<List<Integer>, int[]> entry : map.entrySet()) {
+            List<Integer> unitDirection = entry.getKey();
+            int[] position = entry.getValue();
+//            System.out.println(unitDirection + " : angle is " + Math.atan2(unitDirection.get(0), unitDirection.get(1)));
+//            System.out.println(Math.atan2(unitDirection.get(0), unitDirection.get(1)));
+//            System.out.println("\t" + Arrays.toString(position));
+        }
 
-            //System.out.println("count is: " + count);
+        //System.out.println("count is: " + count);
         return count;
     }
 

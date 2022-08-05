@@ -50,11 +50,12 @@ public class TestBeam {
 //                10000);
 //        System.out.println(test10);
 
-        System.out.println(BeamPoolTables.solution(new int[]{15, 10}, new int[]{7, 4}, new int[]{11, 12}, 331));
-        System.out.println(BeamPoolTables.solution(new int[]{35, 16}, new int[]{17, 24}, new int[]{13, 32}, 729));
-        System.out.println(BeamPoolTables.solution(new int[]{2, 3}, new int[]{1, 1}, new int[]{1, 2}, 1000));
-        System.out.println(BeamPoolTables.solution(new int[]{2, 3}, new int[]{1, 1}, new int[]{1, 2}, 2));
-        System.out.println(BeamPoolTables.solution(new int[]{1250, 1250}, new int[]{1000, 1000}, new int[]{1000, 998}, 2));
+//        System.out.println(BeamPoolTables.solution(new int[]{15, 13}, new int[]{7, 4}, new int[]{11, 12}, 28));
+//        System.out.println(BeamPoolTables.solution(new int[]{35, 36}, new int[]{17, 24}, new int[]{13, 32}, 729));
+//        System.out.println(BeamPoolTables.solution(new int[]{2, 3}, new int[]{1, 1}, new int[]{1, 2}, 1000));
+//        System.out.println(BeamPoolTables.solution(new int[]{2, 3}, new int[]{1, 1}, new int[]{1, 2}, 2));
+//        System.out.println(BeamPoolTables.solution(new int[]{1250, 1250}, new int[]{1000, 1000}, new int[]{1000, 998}, 2));
+        System.out.println(BeamPoolTables.solution(new int[]{9, 3}, new int[]{3, 2}, new int[]{8, 2}, 13));
 
 
 
