@@ -5,49 +5,7 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.Collections;
 
-//class Fraction {
-//    boolean positive;
-//    int numerator;
-//    int denominator;
-//    public Fraction(int n, int d, boolean sign) {
-//        numerator = n;
-//        denominator = d;
-//        positive = sign;
-//    }
-//}
-
-// i am convinced it is runtime that is too slow
-// time limit exceeded
-// look at using constant factors to speed up the program
-
 public class BeamPoolTables {
-
-    // 8-2-2022 6:50pm
-    // not passing tests 5 and 9 at the moment
-    // potential reasons:
-    // doesn't seem like there is roundoff error
-    // even after transitioning to a new thing, int[] gcd simplified
-    // arrays, it still works the same
-    // and anyways roundoff error should be deterministic and should
-    // be the same each time
-    // so this probably means the issue is something else
-    // time limit exceeded
-    // finish out the change from (1, 1) to (0, 0)
-    // roundoff error in double equivalence class
-    // could shift to using a custom fraction class
-    // with integer numerator and denominator
-    // you need to make changes to the program and run it
-    // to gather information on what works and what doesn't
-    // also you should reread the problem description
-    // <= distance or < distance? I think <= but not sure
-    // yep it's <= so we are good, test 7 checks this
-    // since it fails on >= but succeeds on > (which is opposite of <=)
-    // update: this point resolved
-    // corner bounceback in same direction - should be taken
-    // care of, via the reflecting thing
-
-
-
 
     // This problem is a lot like
     // pool table questions,
@@ -230,7 +188,6 @@ public class BeamPoolTables {
         //System.out.println(map);
 
         // i really hope this map worked out okay
-        // TODO: be careful about <local4> is null errors that could occur here
 
         int count = 0; // we will return this value,
         // the count of directions we could go in
