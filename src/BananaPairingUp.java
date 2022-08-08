@@ -1,18 +1,77 @@
-import java.lang.reflect.Array;
+import java.util.HashMap;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.Arrays;
 
 
 public class BananaPairingUp {
+
+    public static int solution(int[] banana_list) {
+        // make an adjacency matrix in O(N^2) time
+        // of who can be paired up with who
+        int n = banana_list.length;
+        int[][] adjacency_matrix = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == j) {
+                    // can't pair up someone with themselves
+                    adjacency_matrix[i][j] = 0;
+                }
+                // spot at (i, j) tells us whether i and j form a cycle
+                // and whether they can be paired or not
+                adjacency_matrix[i][j] = cycle(banana_list[i], banana_list[j]) ? 1 : 0;
+            }
+        }
+        // maximum matching problem
+        // pair the two most 'picky' people off first
+        // leave the most flexible people for last
+        Map<Integer, Integer> freq = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            int sum = 0;
+            for (int j = 0; j < n; j++) {
+                sum += adjacency_matrix[i][j];
+            }
+            freq.put(i, sum);
+        }
+
+        int[][] sorted = new int[n][3];
+        for (Map.Entry<Integer, Integer> entry : freq.entrySet()) {
+            Integer key = entry.getKey(); // sum
+            Integer value = entry.getValue(); // i
+            sorted[key][0] = key;
+            sorted[key][1] = value;
+            sorted[key][2] = banana_list[key];
+        }
+
+        Arrays.sort(sorted, (n1, n2) -> Integer.compare(n1[1], n2[1]));
+        for (int x : banana_list) {
+//            System.out.println(x);
+        }
+
+        int count = n;
+        for (int i = 0; i < n - 1; i++) {
+            // check i and i + 1
+            if (sorted[i][1] > 0 && sorted[i + 1][1] > 0) {
+                count -= 2;
+                i++; // total i += 2, in total
+                continue;
+            }
+            else {
+                // one or both is zero
+                break;
+            }
+        }
+        return count;
+
+    }
 
     // global variables carry across function calls
     // including across different unit tests
     // so you just want to parameter pass instead
     // so it goes out of scope and is recreated
     // when necessary
-    public static int solution(int[] banana_list) {
+    public static int solution1(int[] banana_list) {
         // can't possibly check all possible ways using brute force
         // would be something on the order of O(n!)
         // due to permutations of matching pairs of people up
