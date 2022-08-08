@@ -24,10 +24,22 @@ public class BananaPairingUp {
         }
         ArrayList<Integer> bananas = new ArrayList<>();
         List<Integer> origBananas = new ArrayList<>();
+        ArrayList<Integer> odds = new ArrayList<>();
+        ArrayList<Integer> evens = new ArrayList<>();
+
         for (Integer i : banana_list) {
             origBananas.add(i);
             bananas.add(i);
+            if (i % 2 == 0) {
+                evens.add(i);
+            }
+            else {
+                odds.add(i);
+            }
         }
+
+
+
         //Arrays.sort(banana_list);
 
         // how can you tell, ahead of time, (by looking at them in O(1))
@@ -77,24 +89,44 @@ public class BananaPairingUp {
     }
 
     public static boolean cycle(int x, int y) {
-        Set<Integer> differences = new HashSet<>();
-        while (x != y) {
-            if (differences.contains(x - y)) {
-                return true; // cycle
-            }
-            differences.add(x - y);
-            // x - y uniquely identifies a pair (x, y)
-            // since the sum is already fixed: x + y = some constant amount
-            // what we are really keeping track of here
-            // is whether we reach a pair we've already seen before
-            // thus indicating a never-ending cycle of banana-trading
-            // that the trainers will go through
-            int a = Math.min(x, y);
-            int b = Math.max(x, y);
-            x = a + a;
-            y = b - a;
+        int a = x / gcd(x, y);
+        int b = y / gcd(x, y);
+        int sum = a + b;
+        return ((sum) & (sum - 1)) != 0; // when sum is not a power of two
+//        if ((int) Math.abs(y - x) % 2 == 1) {
+//            return true;
+//        }
+//        else if ((int) Math.abs(y / gcd(x, y) - x / gcd(x, y)) == 2) {
+//            return false;
+//        }
+//        Set<Integer> differences = new HashSet<>();
+//        while (x != y) {
+//            if (differences.contains(x - y)) {
+//                return true; // cycle
+//            }
+//            differences.add(x - y);
+//            // x - y uniquely identifies a pair (x, y)
+//            // since the sum is already fixed: x + y = some constant amount
+//            // what we are really keeping track of here
+//            // is whether we reach a pair we've already seen before
+//            // thus indicating a never-ending cycle of banana-trading
+//            // that the trainers will go through
+//            int a = Math.min(x, y);
+//            int b = Math.max(x, y);
+//            x = a + a;
+//            y = b - a;
+//        }
+//        return false; // bananas equal, game over, trainers stop playing
+//        // (no cycle)
+    }
+
+    public static int gcd(int x, int y) {
+        int a = Math.min(x, y);
+        int b = Math.max(x, y);
+        if (a == 0) {
+            return b;
         }
-        return false; // bananas equal, game over, trainers stop playing
-        // (no cycle)
+        // Euclidean algorithm
+        return gcd(a, b%a);
     }
 }
