@@ -45,22 +45,22 @@ public class BananaPairingUp {
         }
 
         Arrays.sort(sorted, (n1, n2) -> Integer.compare(n1[1], n2[1]));
-        for (int x : banana_list) {
-//            System.out.println(x);
-        }
+//        for (int x : banana_list) {
+////            System.out.println(x);
+//        }
 
         int count = n;
-        for (int i = 0; i < n - 1; i++) {
+        int i = 0;
+        while (i < n - 1) {
             // check i and i + 1
             if (sorted[i][1] > 0 && sorted[i + 1][1] > 0) {
                 count -= 2;
-                i++; // total i += 2, in total
-                continue;
             }
             else {
                 // one or both is zero
                 break;
             }
+            i += 2;
         }
         return count;
 
